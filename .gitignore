@@ -7,3 +7,4 @@ erl_crash.dump
 sniper-*.tar
 /tmp/
 __pycache__
+.env
