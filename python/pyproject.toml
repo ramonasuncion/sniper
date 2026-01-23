@@ -1,0 +1,15 @@
+[project]
+name = "sniper-python"
+version = "0.1.0"
+description = "Python components for Sniper AI code review tool"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "groq>=0.5.0",
+    "python-dotenv>=1.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.14",
+]
