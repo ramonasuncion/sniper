@@ -7,8 +7,10 @@ defmodule Sniper.PythonBridge do
 
   @impl true
   def init(_) do
-    python_path = Path.join([File.cwd!(), "python", "bridge.py"])
-    port = Port.open({:spawn, "python3 #{python_path}"}, [:binary, :exit_status])
+    project_root = File.cwd!()
+    python_path = Path.join([project_root, "python", "bridge.py"])
+    venv_python = Path.join([project_root, "python", ".venv", "bin", "python3"])
+    port = Port.open({:spawn, "#{venv_python} #{python_path}"}, [:binary, :exit_status])
     # Port spawns external Python process for IPC
     {:ok, %{port: port, callers: %{}, buffer: "", id_counter: 0}}
   end
