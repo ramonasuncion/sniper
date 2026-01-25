@@ -11,7 +11,7 @@ install-elixir:
 	$(MIX) deps.get
 
 install-python:
-	cd python && $(UV) sync
+	cd pythonbridge && $(UV) sync
 
 run:
 	$(MIX) run
@@ -19,12 +19,16 @@ run:
 test:
 	$(MIX) test
 
+format:
+	$(MIX) format
+	cd pythonbridge && $(UV) run ruff format .
+
 lint:
 	$(MIX) format --check-formatted
-	cd python && $(UV) run ruff check .
+	cd pythonbridge && $(UV) run ruff check .
 
-validate: lint test
+validate: format lint test
 
 clean:
 	rm -rf _build deps
-	rm -rf python/.venv python/__pycache__
+	rm -rf pythonbridge/.venv pythonbridge/__pycache__

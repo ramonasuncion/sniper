@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/elixir,python
-# Edit at https://www.toptal.com/developers/gitignore?templates=elixir,python
+# Created by https://www.toptal.com/developers/gitignore/api/elixir,python,visualstudiocode
+# Edit at https://www.toptal.com/developers/gitignore?templates=elixir,python,visualstudiocode
 
 ### Elixir ###
 /_build
@@ -187,4 +187,23 @@ poetry.toml
 # LSP config files
 pyrightconfig.json
 
-# End of https://www.toptal.com/developers/gitignore/api/elixir,python
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+
+# Local History for Visual Studio Code
+.history/
+
+# Built Visual Studio Code Extensions
+*.vsix
+
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
+.ionide
+
+# End of https://www.toptal.com/developers/gitignore/api/elixir,python,visualstudiocode
