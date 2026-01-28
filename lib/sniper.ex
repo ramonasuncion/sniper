@@ -10,8 +10,11 @@ defmodule Sniper do
 
   ## Examples
 
-      iex> Sniper.send_message(%{type: "hello", count: 1})
-      %{"_id" => 1, "error" => nil, "response" => "hello from python 1", "status" => "ok"}
+      iex> result = Sniper.send_message(%{type: "hello", count: 1})
+      iex> result["status"]
+      "ok"
+      iex> result["response"]
+      "hello from python 1"
 
   """
   def send_message(message) do

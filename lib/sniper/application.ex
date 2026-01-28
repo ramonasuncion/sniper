@@ -7,6 +7,9 @@ defmodule Sniper.Application do
 
   @impl true
   def start(_type, _args) do
+    # Load .env file from project root
+    load_dotenv()
+
     children = [
       {Sniper.PythonBridge, []},
       {Plug.Cowboy, scheme: :http, plug: Sniper.Webhook, options: [port: 4000]}
@@ -15,8 +18,15 @@ defmodule Sniper.Application do
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Sniper.Supervisor]
-    result = Supervisor.start_link(children, opts)
+    Supervisor.start_link(children, opts)
+  end
 
-    result
+  # Load environment variables from .env file if it exists
+  defp load_dotenv do
+    env_path = Path.join(File.cwd!(), ".env")
+
+    if File.exists?(env_path) do
+      Dotenvy.source([env_path])
+    end
   end
 end
