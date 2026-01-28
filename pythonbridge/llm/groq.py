@@ -1,7 +1,7 @@
 from typing import Optional
 import groq
 from groq import Groq
-from pythonbridge import config
+from pythonbridge.core import config
 
 
 DEFAULT_MODEL = "llama-3.3-70b-versatile"

@@ -3,7 +3,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 # Load .env from project root
-env_path = Path(__file__).resolve().parent.parent / ".env"
+env_path = Path(__file__).resolve().parent.parent.parent / ".env"
 load_dotenv(env_path)
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 GITHUB_APP_ID = os.getenv("GITHUB_APP_ID")

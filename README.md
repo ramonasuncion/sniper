@@ -1,6 +1,6 @@
 # Sniper
 
-Sniper is an AI-powered CLI tool that automates code review and bug detection.
+Sniper is an AI-powered GitHub App tool/bot that automates code review and bug detection.
 
 ## Prerequisites
 

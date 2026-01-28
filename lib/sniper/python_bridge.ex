@@ -21,7 +21,7 @@ defmodule Sniper.PythonBridge do
   def init(_) do
     project_root = File.cwd!()
     pythonbridge_dir = Path.join([project_root, "pythonbridge"])
-    python_path = Path.join([pythonbridge_dir, "bridge.py"])
+    python_path = Path.join([pythonbridge_dir, "main.py"])
 
     case File.exists?(python_path) do
       true ->
@@ -34,7 +34,7 @@ defmodule Sniper.PythonBridge do
               :exit_status,
               args: [
                 "-c",
-                "PYTHONPATH=#{project_root} uv run --directory #{pythonbridge_dir} python -m pythonbridge.bridge"
+                "PYTHONPATH=#{project_root} uv run --directory #{pythonbridge_dir} python -m pythonbridge.main"
               ]
             ]
           )
