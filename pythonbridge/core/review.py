@@ -1,17 +1,20 @@
 from pythonbridge.core.config import load_environment
 from pythonbridge.gh.client import get_diff, post_review
-from pythonbridge.llm.groq import GroqLLM
+from pythonbridge.llm import GraphBuilder
 
 
+# TODO: Add context input to this function and refactor if needed
 def review_pr(payload: dict) -> list[dict]:
     load_environment()
 
     files = get_diff(payload)
-    llm = GroqLLM()
+    graph_builder = GraphBuilder()
+    agent_graph = graph_builder.build_graph()
 
     reviews = []
     for file in files:
-        review = llm.review_code(file.patch) if file.patch else None
+        result = agent_graph.invoke({"pr_input": file.patch}) if file.patch else None
+        review = result.get("pr_review") if result else None
         reviews.append(
             {
                 "filename": file.filename,

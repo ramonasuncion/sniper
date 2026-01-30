@@ -14,7 +14,7 @@ from typing import Optional, Any
 
 from pydantic import BaseModel
 
-from pythonbridge.core.reviewer import review_pr
+from pythonbridge.core.review import review_pr
 
 
 class BridgeResponse(BaseModel):
@@ -60,9 +60,13 @@ def handle_msg(msg: dict) -> BridgeResponse:
 
 # Do not run this file directly, it's only used by Elixir (with the `python -m` module running process)
 if __name__ == "__main__":
-    for line in sys.stdin:
-        msg = json.loads(line)
-        response = handle_msg(msg).model_dump()
-        response["_id"] = msg.get("_id")
-        print(json.dumps(response))
-        sys.stdout.flush()
+    try:
+        for line in sys.stdin:
+            msg = json.loads(line)
+            response = handle_msg(msg).model_dump()
+            response["_id"] = msg.get("_id")
+            print(json.dumps(response))
+            sys.stdout.flush()
+    except BrokenPipeError:
+        # Elixir closed the connection, exit cleanly
+        sys.exit(0)

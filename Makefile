@@ -14,7 +14,7 @@ install-python:
 	cd pythonbridge && $(UV) sync
 
 run:
-	$(MIX) run
+	$(MIX) run --no-halt
 
 # TODO: Temporary until Elixir webhook server is set up
 run-python:

@@ -94,10 +94,10 @@ defmodule Sniper.PythonBridge do
   ## Examples
       Sniper.PythonBridge.send_message(%{type: "hello", count: 1})
   """
-  # Public API: sends message to Python and blocks until response (5s timeout)
+  # Public API: sends message to Python and blocks until response (120s timeout)
   def send_message(message) do
     try do
-      GenServer.call(__MODULE__, {:send, message}, 5000)
+      GenServer.call(__MODULE__, {:send, message}, 120_000)
     catch
       :exit, {:noproc, _} ->
         {:error, "Python bridge not running"}
@@ -142,7 +142,7 @@ defmodule Sniper.PythonBridge do
         end
 
       {:error, reason} ->
-        Logger.error("Failed to decode JSON response: #{reason}, line: #{line}")
+        Logger.error("Failed to decode JSON response: #{inspect(reason)}, line: #{line}")
         state
     end
   end

@@ -1,18 +1,19 @@
 import unittest
 from pathlib import Path
 from unittest.mock import Mock, patch
+from pythonbridge.core.review import review_pr
 
 TESTS_DIR = Path(__file__).parent.parent
-HELLO_PATCH = (TESTS_DIR / "hello.patch").read_text()
+HELLO_PATCH = (TESTS_DIR / "test_files" / "hello.patch").read_text()
 
 
-class TestReviewer(unittest.TestCase):
-    @patch("pythonbridge.core.reviewer.load_environment")
-    @patch("pythonbridge.core.reviewer.get_diff")
-    @patch("pythonbridge.core.reviewer.GroqLLM")
-    @patch("pythonbridge.core.reviewer.post_review")
+class TestReview(unittest.TestCase):
+    @patch("pythonbridge.core.review.load_environment")
+    @patch("pythonbridge.core.review.get_diff")
+    @patch("pythonbridge.core.review.GraphBuilder")
+    @patch("pythonbridge.core.review.post_review")
     def test_review_pr_reviews_files(
-        self, mock_post_review, mock_llm_class, mock_get_diff, mock_load_env
+        self, mock_post_review, mock_graph_builder, mock_get_diff, mock_load_env
     ):
         # https://docs.github.com/en/rest/pulls/pulls#list-pull-requests-files
         mock_file = Mock()
@@ -22,11 +23,9 @@ class TestReviewer(unittest.TestCase):
 
         mock_get_diff.return_value = [mock_file]
 
-        mock_llm = Mock()
-        mock_llm.review_code.return_value = "Looks good, no issues found."
-        mock_llm_class.return_value = mock_llm
-
-        from pythonbridge.core.reviewer import review_pr
+        mock_graph = Mock()
+        mock_graph.invoke.return_value = "Looks good, no issues found."
+        mock_graph_builder.return_value.build_graph.return_value = mock_graph
 
         payload = {
             "number": 1,
@@ -43,14 +42,15 @@ class TestReviewer(unittest.TestCase):
 
         mock_load_env.assert_called_once()
         mock_get_diff.assert_called_once_with(payload)
-        mock_llm.review_code.assert_called_once_with(mock_file.patch)
+        mock_graph.invoke.assert_called_once_with({"pr_input": mock_file.patch})
+        mock_post_review.assert_called_once()
 
-    @patch("pythonbridge.core.reviewer.load_environment")
-    @patch("pythonbridge.core.reviewer.get_diff")
-    @patch("pythonbridge.core.reviewer.GroqLLM")
-    @patch("pythonbridge.core.reviewer.post_review")
+    @patch("pythonbridge.core.review.load_environment")
+    @patch("pythonbridge.core.review.get_diff")
+    @patch("pythonbridge.core.review.GraphBuilder")
+    @patch("pythonbridge.core.review.post_review")
     def test_review_pr_skips_files_without_patch(
-        self, mock_post_review, mock_llm_class, mock_get_diff, mock_load_env
+        self, mock_post_review, mock_graph_builder, mock_get_diff, mock_load_env
     ):
         # Deleted files have no patch (no diff to review)
         mock_file = Mock()
@@ -60,10 +60,8 @@ class TestReviewer(unittest.TestCase):
 
         mock_get_diff.return_value = [mock_file]
 
-        mock_llm = Mock()
-        mock_llm_class.return_value = mock_llm
-
-        from pythonbridge.core.reviewer import review_pr
+        mock_graph = Mock()
+        mock_graph_builder.return_value.build_graph.return_value = mock_graph
 
         payload = {
             "number": 1,
@@ -76,8 +74,12 @@ class TestReviewer(unittest.TestCase):
         self.assertEqual(len(reviews), 1)
         self.assertEqual(reviews[0]["filename"], "deleted.py")
         self.assertIsNone(reviews[0]["review"])
+
+        mock_load_env.assert_called_once()
+        mock_get_diff.assert_called_once_with(payload)
+        mock_post_review.assert_called_once()
         # LLM should NOT be called
-        mock_llm.review_code.assert_not_called()
+        mock_graph.invoke.assert_not_called()
 
 
 if __name__ == "__main__":

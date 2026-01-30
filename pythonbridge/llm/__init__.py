@@ -1,3 +1,3 @@
-from pythonbridge.llm.groq import GroqLLM
+from pythonbridge.llm.entry import GraphBuilder
 
-__all__ = ["GroqLLM"]
+__all__ = ["GraphBuilder"]
