@@ -26,7 +26,7 @@ defmodule Sniper.Application do
     env_path = Path.join(File.cwd!(), ".env")
 
     if File.exists?(env_path) do
-      Dotenvy.source([env_path])
+      Dotenvy.source!([env_path], side_effect: :system)
     end
   end
 end
