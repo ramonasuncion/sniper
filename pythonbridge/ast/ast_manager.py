@@ -277,8 +277,3 @@ class AST_manager:
                                     )
 
         return dict(relationships)
-
-
-test = AST_manager()
-test.create_ast("/Users/joshualee/sniper/sniper/pythonbridge/core/reviewer.py")
-print(test.get_relationships())
